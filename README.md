@@ -3,4 +3,6 @@
 ## Tehtävät
 
 ### Viikko 1
-**Lihavoitua** ja _kursiivia_
+[gitlog](https://github.com/vapsolon/ot-harjoitustyo/blob/master/laskarit/viikko1/gitlog.txt)
+
+[tree](https://github.com/vapsolon/ot-harjoitustyo/blob/master/laskarit/viikko1/komentorivi.txt)

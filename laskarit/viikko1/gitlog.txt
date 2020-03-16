@@ -1,0 +1,114 @@
+$ git log --stat | cat
+commit e1dc524b7134cd41761e2cc347efb0dfc94ba5ba
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:39:15 2020 +0200
+
+    Tiedostoja hieman sekoitettu
+
+ tiedostoja/file2             | 0
+ tiedostoja/{file1 => file22} | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+
+commit 0124cff430110c0a62157f9455fe4d9163cc77e4
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:36:01 2020 +0200
+
+    Tiedostoja
+
+ tiedostoja/file1 | 0
+ tiedostoja/file2 | 0
+ tiedostoja/file3 | 0
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+
+commit b5083dd8db35c605c3ed26278311e3cf6920eddc
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:33:06 2020 +0200
+
+    Edelleen muutoksia
+
+ eka.txt    | 608 +------------------------------------------------------------
+ kolmas.txt |   2 +-
+ 2 files changed, 2 insertions(+), 608 deletions(-)
+
+commit bb9d7cb3439862dfa0137e4dcfe6158b5b24641b
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:31:36 2020 +0200
+
+    Tiedosto uudelleennimetty
+
+ tiedosto.txt => eka.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit b1b0a51610f08cc819c5c04a9927f3b7a98627e5
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:30:52 2020 +0200
+
+    Toinen poistettu
+
+ toinen.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 765fbf9944e1f15d9301a83c19a69f7585fceefb
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:30:06 2020 +0200
+
+    Isompaa tiedostoa muokattu
+
+ tiedosto.txt | 53 +----------------------------------------------------
+ 1 file changed, 1 insertion(+), 52 deletions(-)
+
+commit ceb8d30fe71ebd800396e6010ac9bcacc7509eac
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:29:14 2020 +0200
+
+    Isompi tiedosto
+
+ tiedosto.txt | 659 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 658 insertions(+), 1 deletion(-)
+
+commit 23239b8091c2e1ccaffc2a7e6e08463eda8251bb
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:27:35 2020 +0200
+
+    Kansio ja tiedosto
+
+ stuff/a_file.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 8529a2bfa3f5bf868a5b9d89b036f62f85c6bc3a
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:26:50 2020 +0200
+
+    Toinen ja kolmas muutettu
+
+ kolmas.txt | 1 +
+ toinen.txt | 1 +
+ 2 files changed, 2 insertions(+)
+
+commit d89fceeccaa183511455b3bd3f08fffb4cdb7b6f
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:26:22 2020 +0200
+
+    Kolmas
+
+ kolmas.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit feef41f470253d47e3c47bbd4065ddc1b758e779
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:25:35 2020 +0200
+
+    Muutettu ja lisätty
+
+ tiedosto.txt | 1 +
+ toinen.txt   | 0
+ 2 files changed, 1 insertion(+)
+
+commit 3aa226ecf901fac7855a59a016f4013dce1023de
+Author: vapsolon <vili.solonen@helsinki.fi>
+Date:   Mon Mar 16 15:24:05 2020 +0200
+
+    tiedosto.txt lisätty
+
+ tiedosto.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)

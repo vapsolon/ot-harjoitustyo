@@ -11,4 +11,4 @@ Vielä lyhyesti ja tiiviisti
 * Satunnaiskuvan luominen ilman parametreja
 * Käyttäjäsyöte ainakin kuvan resoluution ja värien määrän suhteen
 * Erilaiset generointisäännöt tai generointimoodit ohjaamaan satunnallisuutta
- ** Esimerkiksi "tietyn värinen pikseli voi elää vain itsestään korkeintaan +-10 väriarvon päässä olevan pikselin naapurina" tai "tiettyyn kohtaan arvottu pikseli kasvattaa ympärilleen viiden pikselin säteelle perheen"
+  * Esimerkiksi "tietyn värinen pikseli voi elää vain itsestään korkeintaan +-10 väriarvon päässä olevan pikselin naapurina" tai "tiettyyn kohtaan arvottu pikseli kasvattaa ympärilleen viiden pikselin säteelle perheen"

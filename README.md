@@ -2,6 +2,7 @@
 
 ## RIG
 [Määrittelydokumentti](https://github.com/vapsolon/ot-harjoitustyo/blob/master/rig/dokut/Määrittelydokumentti.md)
+
 [Työaikakirjanpito](https://github.com/vapsolon/ot-harjoitustyo/blob/master/rig/dokut/Työaikakirjanpito.md)
 
 ## Tehtävät

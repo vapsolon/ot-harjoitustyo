@@ -36,20 +36,20 @@ public class ImageGenerator {
      * @param w Width of the image to be generated
      * @param h Height of the image to be generated
      */
-<span class="nc" id="L39">    public ImageGenerator(int w, int h){</span>
-<span class="nc" id="L40">        this.width = w;</span>
-<span class="nc" id="L41">        this.height = h;</span>
-<span class="nc" id="L42">        this.rand = new Random();</span>
+<span class="fc" id="L39">    public ImageGenerator(int w, int h){</span>
+<span class="fc" id="L40">        this.width = w;</span>
+<span class="fc" id="L41">        this.height = h;</span>
+<span class="fc" id="L42">        this.rand = new Random();</span>
         //Prepare all the required streams ahead of writing
         try {
-<span class="nc" id="L45">            file = new BufferedOutputStream(new FileOutputStream(&quot;image.png&quot;));</span>
-<span class="nc" id="L46">            buffer = new ByteArrayOutputStream();</span>
-<span class="nc" id="L47">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
-<span class="nc" id="L48">            crc = new CRC32();</span>
+<span class="fc" id="L45">            file = new BufferedOutputStream(new FileOutputStream(&quot;image.png&quot;));</span>
+<span class="fc" id="L46">            buffer = new ByteArrayOutputStream();</span>
+<span class="fc" id="L47">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
+<span class="fc" id="L48">            crc = new CRC32();</span>
 <span class="nc" id="L49">        } catch (FileNotFoundException ex) {</span>
 <span class="nc" id="L50">            System.out.println(ex);</span>
-<span class="nc" id="L51">        }</span>
-<span class="nc" id="L52">    }</span>
+<span class="fc" id="L51">        }</span>
+<span class="fc" id="L52">    }</span>
     
     /**
      * Returns the PNG magic header. &lt;br&gt;
@@ -59,9 +59,9 @@ public class ImageGenerator {
      */
     public byte[] magic(){
         //File header is always fixed-length and has the same content
-<span class="nc" id="L62">        byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
+<span class="fc" id="L62">        byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
         
-<span class="nc" id="L64">        return magic;</span>
+<span class="fc" id="L64">        return magic;</span>
     }
     
     /**
@@ -74,9 +74,9 @@ public class ImageGenerator {
      */
     public byte[] header(){
         //IHDR may change depending on colour mode, but for now it's static too
-<span class="nc" id="L77">        byte[] head = {8, 6, 0, 0, 0};</span>
+<span class="fc" id="L77">        byte[] head = {8, 6, 0, 0, 0};</span>
         
-<span class="nc" id="L79">        return head;</span>
+<span class="fc" id="L79">        return head;</span>
     }
     
     /**
@@ -88,7 +88,7 @@ public class ImageGenerator {
      * @return The current CRC value
      */
     public long getCRCValue(){
-<span class="nc" id="L91">        return crc.getValue();</span>
+<span class="fc" id="L91">        return crc.getValue();</span>
     }
     
     /**
@@ -99,13 +99,13 @@ public class ImageGenerator {
      * @throws IOException
      */
     public void writeWord(int i) throws IOException{
-<span class="nc" id="L102">        byte b[]= new byte[4];</span>
-<span class="nc" id="L103">        b[0] = (byte)((i&gt;&gt;24) &amp; 255);</span>
-<span class="nc" id="L104">        b[1] = (byte)((i&gt;&gt;16) &amp; 255);</span>
-<span class="nc" id="L105">        b[2] = (byte)((i&gt;&gt;8) &amp; 255);</span>
-<span class="nc" id="L106">        b[3] = (byte)(i &amp; 255);</span>
-<span class="nc" id="L107">        write(b);</span>
-<span class="nc" id="L108">    }</span>
+<span class="fc" id="L102">        byte b[]= new byte[4];</span>
+<span class="fc" id="L103">        b[0] = (byte)((i&gt;&gt;24) &amp; 255);</span>
+<span class="fc" id="L104">        b[1] = (byte)((i&gt;&gt;16) &amp; 255);</span>
+<span class="fc" id="L105">        b[2] = (byte)((i&gt;&gt;8) &amp; 255);</span>
+<span class="fc" id="L106">        b[3] = (byte)(i &amp; 255);</span>
+<span class="fc" id="L107">        write(b);</span>
+<span class="fc" id="L108">    }</span>
     
     /**
      * Helper method for writing a Byte from an Integer. &lt;br&gt;
@@ -115,9 +115,9 @@ public class ImageGenerator {
      * @throws IOException
      */
     public void writeInt(int i) throws IOException{
-<span class="nc" id="L118">        byte b[] = {(byte)i};</span>
-<span class="nc" id="L119">        write(b);</span>
-<span class="nc" id="L120">    }</span>
+<span class="fc" id="L118">        byte b[] = {(byte)i};</span>
+<span class="fc" id="L119">        write(b);</span>
+<span class="fc" id="L120">    }</span>
 
     /**
      * The actual main method for writing data into the output file. &lt;br&gt;
@@ -127,9 +127,9 @@ public class ImageGenerator {
      * @throws IOException
      */
     public void write(byte b[]) throws IOException{
-<span class="nc" id="L130">        file.write(b);</span>
-<span class="nc" id="L131">        crc.update(b);</span>
-<span class="nc" id="L132">    }</span>
+<span class="fc" id="L130">        file.write(b);</span>
+<span class="fc" id="L131">        crc.update(b);</span>
+<span class="fc" id="L132">    }</span>
     
     /**
      * Main image generation function. &lt;br&gt;

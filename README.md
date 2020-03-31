@@ -5,6 +5,10 @@
 
 [Työaikakirjanpito](https://github.com/vapsolon/ot-harjoitustyo/blob/master/rig/dokut/Työaikakirjanpito.md)
 
+[Javadoc](https://vapsolon.github.io/ot-harjoitustyo/rig/dokut/javadoc/index.html)
+
+[Jacoco](https://vapsolon.github.io/ot-harjoitustyo/rig/dokut/jacoco/index.html)
+
 ## Tehtävät
 
 ### Viikko 1

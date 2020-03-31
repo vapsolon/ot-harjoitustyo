@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-jacoco</actionName>
+            <displayName>jacoco</displayName>
+            <goals>
+                <goal>org.jacoco:jacoco-maven-plugin:report</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-javadoc</actionName>
+            <displayName>javadoc</displayName>
+            <goals>
+                <goal>org.apache.maven.plugins:maven-javadoc-plugin:javadoc</goal>
+            </goals>
+        </action>
+    </actions>

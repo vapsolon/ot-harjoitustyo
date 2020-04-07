@@ -8,7 +8,7 @@ Kuvatiedosto olisi tarkoitus pystyä näyttämään sovelluksen käyttöliittym�
 ## Toiminnallisuudet
 Vielä lyhyesti ja tiiviisti
 
-* Satunnaiskuvan luominen ilman parametreja
-* Käyttäjäsyöte ainakin kuvan resoluution ja värien määrän suhteen
+* Satunnaiskuvan luominen ilman parametreja ✅
+* Käyttäjäsyöte ainakin kuvan resoluution(✅) ja värien määrän suhteen
 * Erilaiset generointisäännöt tai generointimoodit ohjaamaan satunnallisuutta
   * Esimerkiksi "tietyn värinen pikseli voi elää vain itsestään korkeintaan +-10 väriarvon päässä olevan pikselin naapurina" tai "tiettyyn kohtaan arvottu pikseli kasvattaa ympärilleen viiden pikselin säteelle perheen"

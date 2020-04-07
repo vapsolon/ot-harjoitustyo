@@ -61,6 +61,8 @@ public class TestImageGenerator {
     public void testBlackAndWhitePixelGeneration(){
         ImageGenerator ig = new ImageGenerator(512, 512, 1);
         int[] pixel = ig.genPixel();
+        pixel = ig.genPixel();
+        pixel = ig.genPixel();
         int sum = pixel[0] + pixel[1] + pixel[2];
         assertTrue("Generated incorrect Black&White pixel", (sum == 0 || sum == 765));
     }

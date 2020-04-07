@@ -6,4 +6,6 @@ HUOM: Ensimmäiset kaksi päivämäärää ovat koko viikon tilastoja, tästä e
 | :----:|:-----| :-----|
 | 24.3 | 2    | aiheen valinta ja suunnittelu |
 | 31.3 | 8    | PNG-formaatin opiskelu ja ohjelman ydintoiminnan toteutus |
-| yht  | 10   | | 
+| 6.4  | 9    | GUI-toteutus ja muutoksia generoidun kuvan tallennukseen |
+| 7.4  | 6    | Mustavalkoisten kuvien generointi, testikattavuus, checkstyle |
+| yht  | 25   | | 

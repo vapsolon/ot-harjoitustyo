@@ -14,4 +14,11 @@
                 <goal>org.apache.maven.plugins:maven-javadoc-plugin:javadoc</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-checkstyle</actionName>
+            <displayName>checkstyle</displayName>
+            <goals>
+                <goal>org.apache.maven.plugins:maven-checkstyle-plugin:checkstyle</goal>
+            </goals>
+        </action>
     </actions>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RIG</a> &gt; <a href="index.source.html" class="el_package">rig.Utils</a> &gt; <span class="el_source">ImageGenerator.java</span></div><h1>ImageGenerator.java</h1><pre class="source lang-java linenums">package rig.Utils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -11,45 +10,57 @@ import java.util.zip.DeflaterOutputStream;
 
 /**
  * Generates and writes a PNG image to disk. &lt;br&gt;
- * Will contain most of the logic for generating PNG image data. Currently only
- * supports very specific conditions (hardcoded colour mode, every pixel is
- * random-gen) but will eventually be expanded to support a range of different
- * generation methods.
+ * Contains most of the logic for generating PNG image data. Support for
+ * generation modes other than full colour scale RNG is slowly being built.
  * @author vapsolon
  */
 public class ImageGenerator {
 
     private final int width;
     private final int height;
+    //Generation mode, so far 0=regular, 1=black&amp;white
+    private final int mode;
     
-    BufferedOutputStream file;
-    ByteArrayOutputStream buffer;
-    DeflaterOutputStream compress;
-    CRC32 crc;
-    Random rand;
+    //Have the streams and other utilities available for the whole class
+    private BufferedOutputStream file;
+    private ByteArrayOutputStream buffer;
+    private DeflaterOutputStream compress;
+    private CRC32 crc;
+    private Random rand;
+    
+    //Some frequently-used magic numbers go here so checkstyle stops complaining
+    //without having to make an exception for the entire magic number rule
+<span class="nc" id="L33">    private final int black = 0;</span>
+<span class="nc" id="L34">    private final int white = 255;</span>
+<span class="nc" id="L35">    private final int limit = 256;</span>
     
     /**
      * Public constructor for the class. &lt;br&gt;
-     * Takes the width and the height of the image as arguments and initializes
-     * all the required streams and the CRC-calculator in preparation for actual
-     * use.
+     * Takes the width and the height of the image and the image generation mode
+     * as arguments and initializes all the required streams and the
+     * CRC-calculator in preparation for actual use.
      * @param w Width of the image to be generated
      * @param h Height of the image to be generated
+     * @param m Image generation mode
      */
-<span class="fc" id="L39">    public ImageGenerator(int w, int h){</span>
-<span class="fc" id="L40">        this.width = w;</span>
-<span class="fc" id="L41">        this.height = h;</span>
-<span class="fc" id="L42">        this.rand = new Random();</span>
+<span class="nc" id="L46">    public ImageGenerator(int w, int h, int m){</span>
+<span class="nc" id="L47">        this.width = w;</span>
+<span class="nc" id="L48">        this.height = h;</span>
+<span class="nc" id="L49">        this.rand = new Random();</span>
+<span class="nc" id="L50">        this.mode = m;</span>
         //Prepare all the required streams ahead of writing
-        try {
-<span class="fc" id="L45">            file = new BufferedOutputStream(new FileOutputStream(&quot;image.png&quot;));</span>
-<span class="fc" id="L46">            buffer = new ByteArrayOutputStream();</span>
-<span class="fc" id="L47">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
-<span class="fc" id="L48">            crc = new CRC32();</span>
-<span class="nc" id="L49">        } catch (FileNotFoundException ex) {</span>
-<span class="nc" id="L50">            System.out.println(ex);</span>
-<span class="fc" id="L51">        }</span>
-<span class="fc" id="L52">    }</span>
+        try{
+<span class="nc" id="L53">            String tempDir = System.getProperty(&quot;java.io.tmpdir&quot;);</span>
+<span class="nc" id="L54">            file = new BufferedOutputStream(new FileOutputStream(tempDir</span>
+                    + &quot;RIG.png&quot;));
+<span class="nc" id="L56">            buffer = new ByteArrayOutputStream();</span>
+<span class="nc" id="L57">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
+<span class="nc" id="L58">            crc = new CRC32();</span>
+        }
+<span class="nc" id="L60">        catch (IOException ex){</span>
+<span class="nc" id="L61">            System.out.println(ex);</span>
+<span class="nc" id="L62">        }</span>
+<span class="nc" id="L63">    }</span>
     
     /**
      * Returns the PNG magic header. &lt;br&gt;
@@ -59,9 +70,9 @@ public class ImageGenerator {
      */
     public byte[] magic(){
         //File header is always fixed-length and has the same content
-<span class="fc" id="L62">        byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
+<span class="nc" id="L73">        final byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
         
-<span class="fc" id="L64">        return magic;</span>
+<span class="nc" id="L75">        return magic;</span>
     }
     
     /**
@@ -74,9 +85,9 @@ public class ImageGenerator {
      */
     public byte[] header(){
         //IHDR may change depending on colour mode, but for now it's static too
-<span class="fc" id="L77">        byte[] head = {8, 6, 0, 0, 0};</span>
+<span class="nc" id="L88">        final byte[] head = {8, 6, 0, 0, 0};</span>
         
-<span class="fc" id="L79">        return head;</span>
+<span class="nc" id="L90">        return head;</span>
     }
     
     /**
@@ -88,7 +99,7 @@ public class ImageGenerator {
      * @return The current CRC value
      */
     public long getCRCValue(){
-<span class="fc" id="L91">        return crc.getValue();</span>
+<span class="nc" id="L102">        return crc.getValue();</span>
     }
     
     /**
@@ -96,98 +107,125 @@ public class ImageGenerator {
      * Takes an Integer value and makes a big-endian DWORD out of it.
      * PNG wants its data to be big-endian, so some shifting is also required.
      * @param i Integer value to be written into the file
-     * @throws IOException
+     * @throws IOException IOException
      */
     public void writeWord(int i) throws IOException{
-<span class="fc" id="L102">        byte b[]= new byte[4];</span>
-<span class="fc" id="L103">        b[0] = (byte)((i&gt;&gt;24) &amp; 255);</span>
-<span class="fc" id="L104">        b[1] = (byte)((i&gt;&gt;16) &amp; 255);</span>
-<span class="fc" id="L105">        b[2] = (byte)((i&gt;&gt;8) &amp; 255);</span>
-<span class="fc" id="L106">        b[3] = (byte)(i &amp; 255);</span>
-<span class="fc" id="L107">        write(b);</span>
-<span class="fc" id="L108">    }</span>
+<span class="nc" id="L113">        byte[] b = new byte[4];</span>
+<span class="nc" id="L114">        b[0] = (byte)((i&gt;&gt;24) &amp; white);</span>
+<span class="nc" id="L115">        b[1] = (byte)((i&gt;&gt;16) &amp; white);</span>
+<span class="nc" id="L116">        b[2] = (byte)((i&gt;&gt;8) &amp; white);</span>
+<span class="nc" id="L117">        b[3] = (byte)(i &amp; white);</span>
+<span class="nc" id="L118">        write(b);</span>
+<span class="nc" id="L119">    }</span>
     
     /**
      * Helper method for writing a Byte from an Integer. &lt;br&gt;
      * Similar to writeWord() except with the end result being a single Byte
      * instead of a DWORD this time.
      * @param i Integer value to be written into the file
-     * @throws IOException
+     * @throws IOException IOException
      */
     public void writeInt(int i) throws IOException{
-<span class="fc" id="L118">        byte b[] = {(byte)i};</span>
-<span class="fc" id="L119">        write(b);</span>
-<span class="fc" id="L120">    }</span>
+<span class="nc" id="L129">        byte[] b = {(byte)i};</span>
+<span class="nc" id="L130">        write(b);</span>
+<span class="nc" id="L131">    }</span>
 
     /**
      * The actual main method for writing data into the output file. &lt;br&gt;
      * Takes byte-form data and writes it into the output file buffer. Also in
      * charge of keeping the CRC updated with the data that's being written.
      * @param b Bytearray to be written into the file
-     * @throws IOException
+     * @throws IOException IOException
      */
-    public void write(byte b[]) throws IOException{
-<span class="fc" id="L130">        file.write(b);</span>
-<span class="fc" id="L131">        crc.update(b);</span>
-<span class="fc" id="L132">    }</span>
+    public void write(byte[] b) throws IOException{
+<span class="nc" id="L141">        file.write(b);</span>
+<span class="nc" id="L142">        crc.update(b);</span>
+<span class="nc" id="L143">    }</span>
     
     /**
      * Main image generation function. &lt;br&gt;
      * Where the magic happens. Generates a fresh PNG image from scratch. &lt;br&gt;
      * Starts off by writing in the magic file header and the IHDR block, both
      * of which are mostly static. Once the prepwork is done the function then
-     * starts generating image data with random RGB values and an alpha value
-     * of 255. Once the image data is generated it's written to the file along
-     * with the IEND block and the file is closed.
-     * @throws IOException
+     * starts generating image data. Once the image data is generated it's
+     * written to the file along with the IEND block and the file is closed.
+     * @throws IOException IOException
      */
     public void generate() throws IOException{
         //Start the generation and writing process
         //Write in the magic header
-<span class="nc" id="L147">        write(magic());</span>
+<span class="nc" id="L157">        write(magic());</span>
         //Reset CRC in preparation for generation
-<span class="nc" id="L149">        crc.reset();</span>
+<span class="nc" id="L159">        crc.reset();</span>
         //Write in the name for the header chunk
-<span class="nc" id="L151">        write(&quot;IHDR&quot;.getBytes());</span>
+<span class="nc" id="L161">        write(&quot;IHDR&quot;.getBytes());</span>
         //Write in IHDR data
-<span class="nc" id="L153">        writeWord(width);</span>
-<span class="nc" id="L154">        writeWord(height);</span>
-<span class="nc" id="L155">        write(header());</span>
+<span class="nc" id="L163">        writeWord(width);</span>
+<span class="nc" id="L164">        writeWord(height);</span>
+<span class="nc" id="L165">        write(header());</span>
         //Chunk done, write CRC
-<span class="nc" id="L157">        writeWord((int)crc.getValue());</span>
+<span class="nc" id="L167">        writeWord((int)crc.getValue());</span>
         
         //Start generating actual image data
-<span class="nc bnc" id="L160" title="All 2 branches missed.">        for(int i=0;i&lt;height;i++){</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">        for(int i=0;i&lt;height;i++){</span>
             //Every scanline begins with 0
-<span class="nc" id="L162">            compress.write(0);</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">            for(int j=0;j&lt;width;j++){</span>
-<span class="nc" id="L164">                compress.write(rand.nextInt(256)); //RED</span>
-<span class="nc" id="L165">                compress.write(rand.nextInt(256)); //GREEN</span>
-<span class="nc" id="L166">                compress.write(rand.nextInt(256)); //BLUE</span>
-<span class="nc" id="L167">                compress.write(255); //ALPHA</span>
+<span class="nc" id="L172">            compress.write(0);</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            for(int j=0;j&lt;width;j++){</span>
+                //Grab pixel data from genPixel() for neater code overall
+<span class="nc" id="L175">                int[] pixel = genPixel();</span>
+<span class="nc" id="L176">                compress.write(pixel[0]); //RED</span>
+<span class="nc" id="L177">                compress.write(pixel[1]); //GREEN</span>
+<span class="nc" id="L178">                compress.write(pixel[2]); //BLUE</span>
+<span class="nc" id="L179">                compress.write(white); //ALPHA</span>
             }
         }
         //The image data has been generated, close the compressor
-<span class="nc" id="L171">        compress.close();</span>
+<span class="nc" id="L183">        compress.close();</span>
         //Start writing the data into the file
         //Write the size of the coming IDAT chunk
-<span class="nc" id="L174">        writeWord(buffer.size());</span>
+<span class="nc" id="L186">        writeWord(buffer.size());</span>
         //Reset CRC in preparation for IDAT
-<span class="nc" id="L176">        crc.reset();</span>
+<span class="nc" id="L188">        crc.reset();</span>
         //Start writing IDAT contents
-<span class="nc" id="L178">        write(&quot;IDAT&quot;.getBytes());</span>
-<span class="nc" id="L179">        write(buffer.toByteArray());</span>
-<span class="nc" id="L180">        writeWord((int)crc.getValue());</span>
+<span class="nc" id="L190">        write(&quot;IDAT&quot;.getBytes());</span>
+<span class="nc" id="L191">        write(buffer.toByteArray());</span>
+<span class="nc" id="L192">        writeWord((int)crc.getValue());</span>
         //IDAT is done, prepare for IEND
         //Write IEND length
-<span class="nc" id="L183">        writeWord(0);</span>
+<span class="nc" id="L195">        writeWord(0);</span>
         //Reset CRC one more time
-<span class="nc" id="L185">        crc.reset();</span>
+<span class="nc" id="L197">        crc.reset();</span>
         //Write IEND and close the file
-<span class="nc" id="L187">        write(&quot;IEND&quot;.getBytes());</span>
-<span class="nc" id="L188">        writeWord((int)crc.getValue());</span>
-<span class="nc" id="L189">        file.close();</span>
-<span class="nc" id="L190">    }</span>
+<span class="nc" id="L199">        write(&quot;IEND&quot;.getBytes());</span>
+<span class="nc" id="L200">        writeWord((int)crc.getValue());</span>
+<span class="nc" id="L201">        file.close();</span>
+<span class="nc" id="L202">    }</span>
+    
+    /**
+     * Randomly generates the colour values for an individual pixel. &lt;br&gt;
+     * With more methods of generation being supported, pixel generation itself
+     * now gets its own function. Checks the generation mode the generator has
+     * been given and generates pixels with the correct colour values/range.
+     * @return int[] containing 3 values matching the R, G and B data of a
+     * single pixel
+     */
+    public int[] genPixel(){
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        if(this.mode == 1){</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">            if(rand.nextInt(2) == 0){</span>
+<span class="nc" id="L215">                int[] res = {black, black, black};</span>
+<span class="nc" id="L216">                return res;</span>
+            }
+            else{
+<span class="nc" id="L219">                int[] res = {white, white, white};</span>
+<span class="nc" id="L220">                return res;</span>
+            }
+        }
+        else{
+<span class="nc" id="L224">            int[] res = {rand.nextInt(limit), rand.nextInt(limit),</span>
+<span class="nc" id="L225">                rand.nextInt(limit)};</span>
+<span class="nc" id="L226">            return res;</span>
+        }
+    }
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

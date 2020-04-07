@@ -1,7 +1,7 @@
 package rig.rig;
 
-import java.io.IOException;
-import rig.Utils.ImageGenerator;
+import javafx.application.Application;
+import rig.UI.GUI;
 
 /**
  * Main class for the program. <br>
@@ -18,12 +18,13 @@ public class Main {
      * @param args Command line arguments
      */
     public static void main(String[] args){
-        ImageGenerator ig = new ImageGenerator(512, 512);
+        Application.launch(GUI.class);
+        /*ImageGenerator ig = new ImageGenerator(512, 512);
         try {
             ig.generate();
         } catch (IOException ex) {
             System.out.println(ex);
-        }
+        }*/
     }
     
 }

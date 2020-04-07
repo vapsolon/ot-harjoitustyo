@@ -1,6 +1,7 @@
 package rig.Utils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -52,7 +53,7 @@ public class ImageGenerator {
         try{
             String tempDir = System.getProperty("java.io.tmpdir");
             file = new BufferedOutputStream(new FileOutputStream(tempDir
-                    + "RIG.png"));
+                    + File.separator + "RIG.png"));
             buffer = new ByteArrayOutputStream();
             compress = new DeflaterOutputStream(buffer, new Deflater(9));
             crc = new CRC32();

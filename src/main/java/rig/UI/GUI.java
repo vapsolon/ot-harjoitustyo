@@ -1,5 +1,6 @@
 package rig.UI;
 
+import java.io.File;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -102,7 +103,7 @@ public class GUI extends Application{
                 try {
                     ImageGenerator ig = new ImageGenerator(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), mode);
                     ig.generate();
-                    Image temp = new Image("file:///" + System.getProperty("java.io.tmpdir") + "RIG.png");
+                    Image temp = new Image("file:///" + System.getProperty("java.io.tmpdir") + File.separator + "RIG.png");
                     output.setImage(temp);
                     window.sizeToScene();
                 } catch (IOException ex) {

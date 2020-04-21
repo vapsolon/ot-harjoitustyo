@@ -4,9 +4,9 @@
 
 ![Luokkakaavio](https://raw.githubusercontent.com/vapsolon/ot-harjoitustyo/master/dokumentaatio/kuvat/Luokkakaavio.png)
 
-##Toiminnallisuudet
+## Toiminnallisuudet
 
-##### Satunnaiskuvan generointi
+#### Satunnaiskuvan generointi
 Oletetaan alkutilanteeksi oletussyöte, eli kuvan kooksi **512x512**, generaatiomoodiksi **Regular** ja variaatioksi **5**
 
 ![Sekvenssikaavio](https://raw.githubusercontent.com/vapsolon/ot-harjoitustyo/master/dokumentaatio/kuvat/Sekvenssikaavio.png)

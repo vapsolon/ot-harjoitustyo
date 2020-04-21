@@ -10,7 +10,7 @@
 
 [Työaikakirjanpito](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Työaikakirjanpito.md)
 
-[Uusin Release](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/V5)
+[Uusin Release](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Viikko5)
 
 ---
 

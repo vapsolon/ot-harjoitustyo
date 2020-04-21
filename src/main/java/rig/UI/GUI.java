@@ -2,6 +2,9 @@ package rig.UI;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import rig.Utils.ImageGenerator;
 
@@ -29,7 +33,7 @@ import rig.Utils.ImageGenerator;
  * @author vapsolon
  */
 public class GUI extends Application{
-
+    
     @Override
     public void start(Stage window){
         window.setTitle("RIG");
@@ -63,26 +67,33 @@ public class GUI extends Application{
         //Create the input components themselves
         Label hLabel = new Label("Height");
         Label wLabel = new Label("Width");
+        Label vLabel = new Label("Variation Amount (+-)");
         Label radioLabel = new Label("Generation Mode");
         TextField height = new TextField("512");
         TextField width = new TextField("512");
+        TextField variation = new TextField("5");
         RadioButton regular = new RadioButton("Regular");
         RadioButton bnw = new RadioButton("Black and White");
+        RadioButton range = new RadioButton("+-x");
         
         //Create a group for the radio buttons and add them into it
         ToggleGroup control = new ToggleGroup();
         regular.setToggleGroup(control);
         regular.setSelected(true);
         bnw.setToggleGroup(control);
+        range.setToggleGroup(control);
         
         //Add the input components into their layout
         input.add(wLabel, 0, 0);
         input.add(hLabel, 1, 0);
+        input.add(vLabel, 2, 0);
         input.add(width, 0, 1);
         input.add(height, 1, 1);
+        input.add(variation, 2, 1);
         input.add(radioLabel, 0, 2);
         input.add(regular, 0, 3);
         input.add(bnw, 1, 3);
+        input.add(range, 2, 3);
         
         //Add the input layout to base
         base.setTop(input);
@@ -100,8 +111,11 @@ public class GUI extends Application{
                 if(control.getSelectedToggle() == bnw){
                     mode = 1;
                 }
+                else if(control.getSelectedToggle() == range){
+                    mode = 2;
+                }
                 try {
-                    ImageGenerator ig = new ImageGenerator(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), mode);
+                    ImageGenerator ig = new ImageGenerator(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), mode, Integer.valueOf(variation.getText()));
                     ig.generate();
                     Image temp = new Image("file:///" + System.getProperty("java.io.tmpdir") + File.separator + "RIG.png");
                     output.setImage(temp);
@@ -112,12 +126,35 @@ public class GUI extends Application{
             }
         };
         
+        //Handler for image generation button
+        EventHandler saveHandler = new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent e) {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Save Image");
+                fc.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("PNG", "*.png")
+                );
+                File file = fc.showSaveDialog(window);
+                if(file != null){
+                    try {
+                        Files.copy(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "RIG.png"), Paths.get(file.getPath()), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
+                }
+            }
+        };
+        
         //Create the necessary buttons
         Button generate = new Button("Generate Image");
         generate.setOnAction(generateHandler);
+        Button save = new Button("Save Image");
+        save.setOnAction(saveHandler);
         
         //Add buttons to their layout
         controlBox.getChildren().add(generate);
+        controlBox.getChildren().add(save);
         base.setBottom(controlBox);
         
         //Create the actual scene from the base layout and set it as the default

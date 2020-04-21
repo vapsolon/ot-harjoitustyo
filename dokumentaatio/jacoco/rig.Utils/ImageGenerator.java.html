@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImageGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RIG</a> &gt; <a href="index.source.html" class="el_package">rig.Utils</a> &gt; <span class="el_source">ImageGenerator.java</span></div><h1>ImageGenerator.java</h1><pre class="source lang-java linenums">package rig.Utils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -18,8 +19,10 @@ public class ImageGenerator {
 
     private final int width;
     private final int height;
-    //Generation mode, so far 0=regular, 1=black&amp;white
+    //Generation mode, so far 0=regular, 1=black&amp;white, 2=+-
     private final int mode;
+    //The amount of increase/decrease per pixel for generation mode 2
+    private final int variation;
     
     //Have the streams and other utilities available for the whole class
     private BufferedOutputStream file;
@@ -28,11 +31,17 @@ public class ImageGenerator {
     private CRC32 crc;
     private Random rand;
     
+    //Store the latest RGB data so some specialized generation methods can use
+    //them
+<span class="fc" id="L36">    private int lr = -1;</span>
+<span class="fc" id="L37">    private int lg = -1;</span>
+<span class="fc" id="L38">    private int lb = -1;</span>
+    
     //Some frequently-used magic numbers go here so checkstyle stops complaining
     //without having to make an exception for the entire magic number rule
-<span class="fc" id="L33">    private final int black = 0;</span>
-<span class="fc" id="L34">    private final int white = 255;</span>
-<span class="fc" id="L35">    private final int limit = 256;</span>
+<span class="fc" id="L42">    private final int black = 0;</span>
+<span class="fc" id="L43">    private final int white = 255;</span>
+<span class="fc" id="L44">    private final int limit = 256;</span>
     
     /**
      * Public constructor for the class. &lt;br&gt;
@@ -42,25 +51,27 @@ public class ImageGenerator {
      * @param w Width of the image to be generated
      * @param h Height of the image to be generated
      * @param m Image generation mode
+     * @param v Amount of variation for generation mode 2
      */
-<span class="fc" id="L46">    public ImageGenerator(int w, int h, int m){</span>
-<span class="fc" id="L47">        this.width = w;</span>
-<span class="fc" id="L48">        this.height = h;</span>
-<span class="fc" id="L49">        this.rand = new Random();</span>
-<span class="fc" id="L50">        this.mode = m;</span>
+<span class="fc" id="L56">    public ImageGenerator(int w, int h, int m, int v){</span>
+<span class="fc" id="L57">        this.width = w;</span>
+<span class="fc" id="L58">        this.height = h;</span>
+<span class="fc" id="L59">        this.rand = new Random();</span>
+<span class="fc" id="L60">        this.mode = m;</span>
+<span class="fc" id="L61">        this.variation = v;</span>
         //Prepare all the required streams ahead of writing
         try{
-<span class="fc" id="L53">            String tempDir = System.getProperty(&quot;java.io.tmpdir&quot;);</span>
-<span class="fc" id="L54">            file = new BufferedOutputStream(new FileOutputStream(tempDir</span>
-                    + &quot;RIG.png&quot;));
-<span class="fc" id="L56">            buffer = new ByteArrayOutputStream();</span>
-<span class="fc" id="L57">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
-<span class="fc" id="L58">            crc = new CRC32();</span>
+<span class="fc" id="L64">            String tempDir = System.getProperty(&quot;java.io.tmpdir&quot;);</span>
+<span class="fc" id="L65">            file = new BufferedOutputStream(new FileOutputStream(tempDir</span>
+                    + File.separator + &quot;RIG.png&quot;));
+<span class="fc" id="L67">            buffer = new ByteArrayOutputStream();</span>
+<span class="fc" id="L68">            compress = new DeflaterOutputStream(buffer, new Deflater(9));</span>
+<span class="fc" id="L69">            crc = new CRC32();</span>
         }
-<span class="nc" id="L60">        catch (IOException ex){</span>
-<span class="nc" id="L61">            System.out.println(ex);</span>
-<span class="fc" id="L62">        }</span>
-<span class="fc" id="L63">    }</span>
+<span class="nc" id="L71">        catch (IOException ex){</span>
+<span class="nc" id="L72">            System.out.println(ex);</span>
+<span class="fc" id="L73">        }</span>
+<span class="fc" id="L74">    }</span>
     
     /**
      * Returns the PNG magic header. &lt;br&gt;
@@ -70,9 +81,9 @@ public class ImageGenerator {
      */
     public byte[] magic(){
         //File header is always fixed-length and has the same content
-<span class="fc" id="L73">        final byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
+<span class="fc" id="L84">        final byte[] magic = {-119, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13};</span>
         
-<span class="fc" id="L75">        return magic;</span>
+<span class="fc" id="L86">        return magic;</span>
     }
     
     /**
@@ -85,9 +96,9 @@ public class ImageGenerator {
      */
     public byte[] header(){
         //IHDR may change depending on colour mode, but for now it's static too
-<span class="fc" id="L88">        final byte[] head = {8, 6, 0, 0, 0};</span>
+<span class="fc" id="L99">        final byte[] head = {8, 6, 0, 0, 0};</span>
         
-<span class="fc" id="L90">        return head;</span>
+<span class="fc" id="L101">        return head;</span>
     }
     
     /**
@@ -99,7 +110,7 @@ public class ImageGenerator {
      * @return The current CRC value
      */
     public long getCRCValue(){
-<span class="fc" id="L102">        return crc.getValue();</span>
+<span class="fc" id="L113">        return crc.getValue();</span>
     }
     
     /**
@@ -110,13 +121,13 @@ public class ImageGenerator {
      * @throws IOException IOException
      */
     public void writeWord(int i) throws IOException{
-<span class="fc" id="L113">        byte[] b = new byte[4];</span>
-<span class="fc" id="L114">        b[0] = (byte)((i&gt;&gt;24) &amp; white);</span>
-<span class="fc" id="L115">        b[1] = (byte)((i&gt;&gt;16) &amp; white);</span>
-<span class="fc" id="L116">        b[2] = (byte)((i&gt;&gt;8) &amp; white);</span>
-<span class="fc" id="L117">        b[3] = (byte)(i &amp; white);</span>
-<span class="fc" id="L118">        write(b);</span>
-<span class="fc" id="L119">    }</span>
+<span class="fc" id="L124">        byte[] b = new byte[4];</span>
+<span class="fc" id="L125">        b[0] = (byte)((i&gt;&gt;24) &amp; white);</span>
+<span class="fc" id="L126">        b[1] = (byte)((i&gt;&gt;16) &amp; white);</span>
+<span class="fc" id="L127">        b[2] = (byte)((i&gt;&gt;8) &amp; white);</span>
+<span class="fc" id="L128">        b[3] = (byte)(i &amp; white);</span>
+<span class="fc" id="L129">        write(b);</span>
+<span class="fc" id="L130">    }</span>
     
     /**
      * Helper method for writing a Byte from an Integer. &lt;br&gt;
@@ -126,9 +137,9 @@ public class ImageGenerator {
      * @throws IOException IOException
      */
     public void writeInt(int i) throws IOException{
-<span class="fc" id="L129">        byte[] b = {(byte)i};</span>
-<span class="fc" id="L130">        write(b);</span>
-<span class="fc" id="L131">    }</span>
+<span class="fc" id="L140">        byte[] b = {(byte)i};</span>
+<span class="fc" id="L141">        write(b);</span>
+<span class="fc" id="L142">    }</span>
 
     /**
      * The actual main method for writing data into the output file. &lt;br&gt;
@@ -138,9 +149,9 @@ public class ImageGenerator {
      * @throws IOException IOException
      */
     public void write(byte[] b) throws IOException{
-<span class="fc" id="L141">        file.write(b);</span>
-<span class="fc" id="L142">        crc.update(b);</span>
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L152">        file.write(b);</span>
+<span class="fc" id="L153">        crc.update(b);</span>
+<span class="fc" id="L154">    }</span>
     
     /**
      * Main image generation function. &lt;br&gt;
@@ -154,52 +165,52 @@ public class ImageGenerator {
     public void generate() throws IOException{
         //Start the generation and writing process
         //Write in the magic header
-<span class="fc" id="L157">        write(magic());</span>
+<span class="fc" id="L168">        write(magic());</span>
         //Reset CRC in preparation for generation
-<span class="fc" id="L159">        crc.reset();</span>
+<span class="fc" id="L170">        crc.reset();</span>
         //Write in the name for the header chunk
-<span class="fc" id="L161">        write(&quot;IHDR&quot;.getBytes());</span>
+<span class="fc" id="L172">        write(&quot;IHDR&quot;.getBytes());</span>
         //Write in IHDR data
-<span class="fc" id="L163">        writeWord(width);</span>
-<span class="fc" id="L164">        writeWord(height);</span>
-<span class="fc" id="L165">        write(header());</span>
+<span class="fc" id="L174">        writeWord(width);</span>
+<span class="fc" id="L175">        writeWord(height);</span>
+<span class="fc" id="L176">        write(header());</span>
         //Chunk done, write CRC
-<span class="fc" id="L167">        writeWord((int)crc.getValue());</span>
+<span class="fc" id="L178">        writeWord((int)crc.getValue());</span>
         
         //Start generating actual image data
-<span class="fc bfc" id="L170" title="All 2 branches covered.">        for(int i=0;i&lt;height;i++){</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        for(int i=0;i&lt;height;i++){</span>
             //Every scanline begins with 0
-<span class="fc" id="L172">            compress.write(0);</span>
-<span class="fc bfc" id="L173" title="All 2 branches covered.">            for(int j=0;j&lt;width;j++){</span>
+<span class="fc" id="L183">            compress.write(0);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">            for(int j=0;j&lt;width;j++){</span>
                 //Grab pixel data from genPixel() for neater code overall
-<span class="fc" id="L175">                int[] pixel = genPixel();</span>
-<span class="fc" id="L176">                compress.write(pixel[0]); //RED</span>
-<span class="fc" id="L177">                compress.write(pixel[1]); //GREEN</span>
-<span class="fc" id="L178">                compress.write(pixel[2]); //BLUE</span>
-<span class="fc" id="L179">                compress.write(white); //ALPHA</span>
+<span class="fc" id="L186">                int[] pixel = genPixel();</span>
+<span class="fc" id="L187">                compress.write(pixel[0]); //RED</span>
+<span class="fc" id="L188">                compress.write(pixel[1]); //GREEN</span>
+<span class="fc" id="L189">                compress.write(pixel[2]); //BLUE</span>
+<span class="fc" id="L190">                compress.write(white); //ALPHA</span>
             }
         }
         //The image data has been generated, close the compressor
-<span class="fc" id="L183">        compress.close();</span>
+<span class="fc" id="L194">        compress.close();</span>
         //Start writing the data into the file
         //Write the size of the coming IDAT chunk
-<span class="fc" id="L186">        writeWord(buffer.size());</span>
+<span class="fc" id="L197">        writeWord(buffer.size());</span>
         //Reset CRC in preparation for IDAT
-<span class="fc" id="L188">        crc.reset();</span>
+<span class="fc" id="L199">        crc.reset();</span>
         //Start writing IDAT contents
-<span class="fc" id="L190">        write(&quot;IDAT&quot;.getBytes());</span>
-<span class="fc" id="L191">        write(buffer.toByteArray());</span>
-<span class="fc" id="L192">        writeWord((int)crc.getValue());</span>
+<span class="fc" id="L201">        write(&quot;IDAT&quot;.getBytes());</span>
+<span class="fc" id="L202">        write(buffer.toByteArray());</span>
+<span class="fc" id="L203">        writeWord((int)crc.getValue());</span>
         //IDAT is done, prepare for IEND
         //Write IEND length
-<span class="fc" id="L195">        writeWord(0);</span>
+<span class="fc" id="L206">        writeWord(0);</span>
         //Reset CRC one more time
-<span class="fc" id="L197">        crc.reset();</span>
+<span class="fc" id="L208">        crc.reset();</span>
         //Write IEND and close the file
-<span class="fc" id="L199">        write(&quot;IEND&quot;.getBytes());</span>
-<span class="fc" id="L200">        writeWord((int)crc.getValue());</span>
-<span class="fc" id="L201">        file.close();</span>
-<span class="fc" id="L202">    }</span>
+<span class="fc" id="L210">        write(&quot;IEND&quot;.getBytes());</span>
+<span class="fc" id="L211">        writeWord((int)crc.getValue());</span>
+<span class="fc" id="L212">        file.close();</span>
+<span class="fc" id="L213">    }</span>
     
     /**
      * Randomly generates the colour values for an individual pixel. &lt;br&gt;
@@ -210,23 +221,51 @@ public class ImageGenerator {
      * single pixel
      */
     public int[] genPixel(){
-        //Tarkastetaan generointimoodi ja luodaan pikseleitä sen perusteella
-<span class="fc bfc" id="L214" title="All 2 branches covered.">        if(this.mode == 1){</span>
-            //Jos 0, pikseli on musta, jos 1 se on valkoinen
-<span class="fc bfc" id="L216" title="All 2 branches covered.">            if(rand.nextInt(2) == 0){</span>
-<span class="fc" id="L217">                int[] res = {black, black, black};</span>
-<span class="fc" id="L218">                return res;</span>
+        //Check generation mode and generate pixels based on it
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        if(this.mode == 1){</span>
+            //If 0, pixel is black, if 1 white
+<span class="fc bfc" id="L227" title="All 2 branches covered.">            if(rand.nextInt(2) == 0){</span>
+<span class="fc" id="L228">                int[] res = {black, black, black};</span>
+<span class="fc" id="L229">                return res;</span>
             }
             else{
-<span class="fc" id="L221">                int[] res = {white, white, white};</span>
-<span class="fc" id="L222">                return res;</span>
+<span class="fc" id="L232">                int[] res = {white, white, white};</span>
+<span class="fc" id="L233">                return res;</span>
             }
         }
-        //Jos moodi on 0 luodaan tavallinen pikseli
+        //Mode is +-5
+<span class="fc bfc" id="L237" title="All 2 branches covered.">        else if(this.mode == 2){</span>
+            //If lr==-1 we're generating the first pixel which is unlimited
+<span class="fc bfc" id="L239" title="All 2 branches covered.">            if(this.lr == -1){</span>
+<span class="fc" id="L240">                lr = rand.nextInt(limit);</span>
+<span class="fc" id="L241">                lg = rand.nextInt(limit);</span>
+<span class="fc" id="L242">                lb = rand.nextInt(limit);</span>
+<span class="fc" id="L243">                int[] res = {lr, lg, lb};</span>
+<span class="fc" id="L244">                return res;</span>
+            }
+            //At least one pixel has been generated and we can use a reference point
+            else{
+                //If 0, reduce the value of all colours
+<span class="fc bfc" id="L249" title="All 2 branches covered.">                if(rand.nextInt(2) == 0){</span>
+<span class="fc" id="L250">                    lr -= variation;</span>
+<span class="fc" id="L251">                    lg -= variation;</span>
+<span class="fc" id="L252">                    lb -= variation;</span>
+                }
+                //Otherwise increase the values
+                else{
+<span class="fc" id="L256">                    lr += variation;</span>
+<span class="fc" id="L257">                    lg += variation;</span>
+<span class="fc" id="L258">                    lb += variation;</span>
+                }
+<span class="fc" id="L260">                int[] res = {lr, lg, lb};</span>
+<span class="fc" id="L261">                return res;</span>
+            }
+        }
+        //If mode is 0, generate a regular random pixel
         else{
-<span class="fc" id="L227">            int[] res = {rand.nextInt(limit), rand.nextInt(limit),</span>
-<span class="fc" id="L228">                rand.nextInt(limit)};</span>
-<span class="fc" id="L229">            return res;</span>
+<span class="fc" id="L266">            int[] res = {rand.nextInt(limit), rand.nextInt(limit),</span>
+<span class="fc" id="L267">                rand.nextInt(limit)};</span>
+<span class="fc" id="L268">            return res;</span>
         }
     }
     

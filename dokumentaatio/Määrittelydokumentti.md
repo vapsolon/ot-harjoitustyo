@@ -12,3 +12,4 @@ Vielä lyhyesti ja tiiviisti
 * Käyttäjäsyöte ainakin kuvan resoluution(✅) ja värien määrän suhteen
 * Erilaiset generointisäännöt tai generointimoodit ohjaamaan satunnallisuutta
   * Esimerkiksi "tietyn värinen pikseli voi elää vain itsestään korkeintaan +-10 väriarvon päässä olevan pikselin naapurina" tai "tiettyyn kohtaan arvottu pikseli kasvattaa ympärilleen viiden pikselin säteelle perheen"
+  * Tällä hetkellä toteutettu **Täysin satunnainen**, **Mustavalkoinen** ja **Variaatio aiemman pikselin perusteella**

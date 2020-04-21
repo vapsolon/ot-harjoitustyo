@@ -8,4 +8,6 @@ HUOM: Ensimmäiset kaksi päivämäärää ovat koko viikon tilastoja, tästä e
 | 31.3 | 8    | PNG-formaatin opiskelu ja ohjelman ydintoiminnan toteutus |
 | 6.4  | 9    | GUI-toteutus ja muutoksia generoidun kuvan tallennukseen |
 | 7.4  | 6    | Mustavalkoisten kuvien generointi, testikattavuus, checkstyle |
-| yht  | 25   | | 
+| 20.4 | 3    | Kuvien tallennus ja checkstyle-hiominen |
+| 21.4 | 5    | Kolmas generointimoodi |
+| yht  | 33   | | 

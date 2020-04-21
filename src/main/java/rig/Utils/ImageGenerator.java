@@ -19,8 +19,10 @@ public class ImageGenerator {
 
     private final int width;
     private final int height;
-    //Generation mode, so far 0=regular, 1=black&white
+    //Generation mode, so far 0=regular, 1=black&white, 2=+-
     private final int mode;
+    //The amount of increase/decrease per pixel for generation mode 2
+    private final int variation;
     
     //Have the streams and other utilities available for the whole class
     private BufferedOutputStream file;
@@ -28,6 +30,12 @@ public class ImageGenerator {
     private DeflaterOutputStream compress;
     private CRC32 crc;
     private Random rand;
+    
+    //Store the latest RGB data so some specialized generation methods can use
+    //them
+    private int lr = -1;
+    private int lg = -1;
+    private int lb = -1;
     
     //Some frequently-used magic numbers go here so checkstyle stops complaining
     //without having to make an exception for the entire magic number rule
@@ -43,19 +51,22 @@ public class ImageGenerator {
      * @param w Width of the image to be generated
      * @param h Height of the image to be generated
      * @param m Image generation mode
+     * @param v Amount of variation for generation mode 2
      */
-    public ImageGenerator(int w, int h, int m){
+    public ImageGenerator(int w, int h, int m, int v){
         this.width = w;
         this.height = h;
         this.rand = new Random();
         this.mode = m;
+        this.variation = v;
         //Prepare all the required streams ahead of writing
         try{
             String tempDir = System.getProperty("java.io.tmpdir");
             file = new BufferedOutputStream(new FileOutputStream(tempDir
                     + File.separator + "RIG.png"));
             buffer = new ByteArrayOutputStream();
-            compress = new DeflaterOutputStream(buffer, new Deflater(9));
+            final int def = 9;
+            compress = new DeflaterOutputStream(buffer, new Deflater(def));
             crc = new CRC32();
         }
         catch (IOException ex){
@@ -111,7 +122,8 @@ public class ImageGenerator {
      * @throws IOException IOException
      */
     public void writeWord(int i) throws IOException{
-        byte[] b = new byte[4];
+        final int word = 4;
+        byte[] b = new byte[word];
         b[0] = (byte)((i>>24) & white);
         b[1] = (byte)((i>>16) & white);
         b[2] = (byte)((i>>8) & white);
@@ -211,9 +223,9 @@ public class ImageGenerator {
      * single pixel
      */
     public int[] genPixel(){
-        //Tarkastetaan generointimoodi ja luodaan pikseleitä sen perusteella
+        //Check generation mode and generate pixels based on it
         if(this.mode == 1){
-            //Jos 0, pikseli on musta, jos 1 se on valkoinen
+            //If 0, pixel is black, if 1 white
             if(rand.nextInt(2) == 0){
                 int[] res = {black, black, black};
                 return res;
@@ -223,7 +235,36 @@ public class ImageGenerator {
                 return res;
             }
         }
-        //Jos moodi on 0 luodaan tavallinen pikseli
+        //Mode is +-5
+        else if(this.mode == 2){
+            //If lr==-1 we're generating the first pixel which is unlimited
+            if(this.lr == -1){
+                lr = rand.nextInt(limit);
+                lg = rand.nextInt(limit);
+                lb = rand.nextInt(limit);
+                int[] res = {lr, lg, lb};
+                return res;
+            }
+            //At least one pixel has been generated and we can use a
+            //reference point
+            else{
+                //If 0, reduce the value of all colours
+                if(rand.nextInt(2) == 0){
+                    lr -= variation;
+                    lg -= variation;
+                    lb -= variation;
+                }
+                //Otherwise increase the values
+                else{
+                    lr += variation;
+                    lg += variation;
+                    lb += variation;
+                }
+                int[] res = {lr, lg, lb};
+                return res;
+            }
+        }
+        //If mode is 0, generate a regular random pixel
         else{
             int[] res = {rand.nextInt(limit), rand.nextInt(limit),
                 rand.nextInt(limit)};

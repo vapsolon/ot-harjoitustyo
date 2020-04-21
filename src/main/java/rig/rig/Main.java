@@ -9,7 +9,14 @@ import rig.UI.GUI;
  * run. Will expand to set up and run the GUI class in the future.
  * @author vapsolon
  */
-public class Main {
+public final class Main {
+    
+    /**
+    * Empty private constructor so Checkstyle stops complaining.
+    */
+    private Main(){
+        
+    }
     
     /**
      * The main function. <br>

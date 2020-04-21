@@ -1,0 +1,24 @@
+-classpath
+'C:/Users/Tomato/.m2/repository/org/openjfx/javafx-controls/14/javafx-controls-14.jar;C:/Users/Tomato/.m2/repository/org/openjfx/javafx-controls/14/javafx-controls-14-win.jar;C:/Users/Tomato/.m2/repository/org/openjfx/javafx-graphics/14/javafx-graphics-14.jar;C:/Users/Tomato/.m2/repository/org/openjfx/javafx-graphics/14/javafx-graphics-14-win.jar;C:/Users/Tomato/.m2/repository/org/openjfx/javafx-base/14/javafx-base-14.jar;C:/Users/Tomato/.m2/repository/org/openjfx/javafx-base/14/javafx-base-14-win.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'G:/Users/NotTheOP/Workspace/YO/ohte/harjoitustyo/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2020. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'G:/Users/NotTheOP/Workspace/YO/ohte/harjoitustyo/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'RIG 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' 'G:/Users/NotTheOP/Workspace/YO/ohte/harjoitustyo/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'RIG 1.0-SNAPSHOT API'

@@ -10,8 +10,6 @@
 
 [Työaikakirjanpito](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Työaikakirjanpito.md)
 
-[Uusin Release](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Viikko5)
-
 ---
 
 [Javadoc](https://vapsolon.github.io/ot-harjoitustyo/dokumentaatio/javadoc/index.html)
@@ -19,6 +17,12 @@
 [Jacoco](https://vapsolon.github.io/ot-harjoitustyo/dokumentaatio/jacoco/index.html)
 
 [Checkstyle](https://vapsolon.github.io/ot-harjoitustyo/dokumentaatio/checkstyle/checkstyle.html)
+
+## Releaset
+
+[Viikko 5](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Viikko5)
+
+[Viikko 6](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Viikko6)
 
 ## Komentorivitoiminnot
 

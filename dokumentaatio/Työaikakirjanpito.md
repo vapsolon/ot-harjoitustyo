@@ -10,4 +10,6 @@ HUOM: Ensimmäiset kaksi päivämäärää ovat koko viikon tilastoja, tästä e
 | 7.4  | 6    | Mustavalkoisten kuvien generointi, testikattavuus, checkstyle |
 | 20.4 | 3    | Kuvien tallennus ja checkstyle-hiominen |
 | 21.4 | 5    | Kolmas generointimoodi |
-| yht  | 33   | | 
+| 27.4 | 3    | Parannuksia projektin rakennukseen ja javafx:n käytöön |
+| 28.4 | 3    | Käyttäjäsyötteen validointi + testit, kakki maven-toiminnallisuudet vihdoin täyteen kuntoon |
+| yht  | 39   | | 

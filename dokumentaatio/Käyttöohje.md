@@ -1,9 +1,9 @@
 # RIG - Käyttöohje
 
-Tominnallisuus on vielä tällä hetkellä hyvin yksinkertainen. Mahdolliset syötteet ovat:
+Ohjelma toimii graafisen käyttöliittymän kautta. Mahdolliset syötteet ovat:
 
-* Kuvan leveys (ei validoitu)
-* Kuvan korkeus (ei validoitu)
+* Kuvan leveys
+* Kuvan korkeus
 * Generoinnin variaatio (rajoitettu **+-** -generaatiomoodiin)
 * Generaatiomoodi
   * Regular - Luo tavallisen kuvan jossa koko värimaailma on käytettävissä

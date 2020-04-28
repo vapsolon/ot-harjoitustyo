@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Validator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">RIG</a> &gt; <a href="index.source.html" class="el_package">rig.Utils</a> &gt; <span class="el_source">Validator.java</span></div><h1>Validator.java</h1><pre class="source lang-java linenums">package rig.Utils;
+
+/**
+ * Simple helper class for validating user input. &lt;br&gt;
+ * Currently only checks if input is numeric. Useful for making sure incorrect
+ * height/width/variation data doesn't get passed to the generator and cause
+ * a hard crash.
+ * @author vapsolon
+ */
+<span class="fc" id="L10">public class Validator{</span>
+    
+    /**
+     * Checks if input is numeric. &lt;br&gt;
+     * Goes through the given input string one character at a time and
+     * immediately returns false if a non-numeric character is found. If the
+     * method makes it through the entire input string without failing the
+     * string was indeed numeric and it can return true.
+     * @param input String to check for numericness
+     * @return true if string was entirely numeric, false otherwise
+     */
+    public boolean isNumeric(String input){
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        for(char c: input.toCharArray()){</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            if(!(Character.isDigit(c))){</span>
+<span class="fc" id="L24">                return false;</span>
+            }
+        }
+<span class="fc" id="L27">        return true;</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

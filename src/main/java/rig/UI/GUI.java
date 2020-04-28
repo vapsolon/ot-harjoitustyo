@@ -21,9 +21,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import rig.Utils.ImageGenerator;
+import rig.Utils.Validator;
 
 /**
  * The graphical user interface for the program. <br>
@@ -34,8 +36,13 @@ import rig.Utils.ImageGenerator;
  */
 public class GUI extends Application{
     
+    private Validator validator;
+    
     @Override
     public void start(Stage window){
+        //Create the input validator well and early
+        this.validator = new Validator();
+        
         window.setTitle("RIG");
         
         //Create the base layout
@@ -76,6 +83,15 @@ public class GUI extends Application{
         RadioButton bnw = new RadioButton("Black and White");
         RadioButton range = new RadioButton("+-x");
         
+        //Create a special label for displaying errors
+        Label error = new Label("");
+        error.setAlignment(Pos.CENTER);
+        error.setTextAlignment(TextAlignment.CENTER);
+        error.setStyle("-fx-font-size: 16;-fx-background-color: #FF6666;");
+        error.setMaxWidth(Double.MAX_VALUE);
+        error.setMaxHeight(Double.MAX_VALUE);
+        error.setVisible(false);
+        
         //Create a group for the radio buttons and add them into it
         ToggleGroup control = new ToggleGroup();
         regular.setToggleGroup(control);
@@ -94,6 +110,7 @@ public class GUI extends Application{
         input.add(regular, 0, 3);
         input.add(bnw, 1, 3);
         input.add(range, 2, 3);
+        input.add(error, 0, 4, 4, 1);
         
         //Add the input layout to base
         base.setTop(input);
@@ -115,11 +132,18 @@ public class GUI extends Application{
                     mode = 2;
                 }
                 try {
-                    ImageGenerator ig = new ImageGenerator(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), mode, Integer.valueOf(variation.getText()));
-                    ig.generate();
-                    Image temp = new Image("file:///" + System.getProperty("java.io.tmpdir") + File.separator + "RIG.png");
-                    output.setImage(temp);
-                    window.sizeToScene();
+                    if(!(validator.isNumeric(width.getText()) && validator.isNumeric(height.getText()) && validator.isNumeric(variation.getText()))){
+                        error.setText("Incorrect input, make sure Width, Height and Variation are numeric");
+                        error.setVisible(true);
+                    }
+                    else{
+                        error.setVisible(false);
+                        ImageGenerator ig = new ImageGenerator(Integer.valueOf(width.getText()), Integer.valueOf(height.getText()), mode, Integer.valueOf(variation.getText()));
+                        ig.generate();
+                        Image temp = new Image("file:///" + System.getProperty("java.io.tmpdir") + File.separator + "RIG.png");
+                        output.setImage(temp);
+                        window.sizeToScene();
+                    }
                 } catch (IOException ex) {
                     System.out.println(ex);
                 }

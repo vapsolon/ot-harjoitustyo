@@ -81,7 +81,6 @@ public class TestImageGenerator {
         int[] initial = ig.genPixel();
         int[] pixel = ig.genPixel();
         int[] comparison = ig.genPixel();
-        System.out.println(initial[0] + "---" + pixel[0] + "---" + comparison[0]);
         int sum = pixel[0] + pixel[1] + pixel[2];
         int compSum = comparison[0] + comparison[1] + comparison[2];
         assertTrue("Generated incorrect Variation pixel", (sum - compSum == -15 || sum - compSum == 15));

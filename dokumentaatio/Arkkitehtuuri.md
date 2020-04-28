@@ -1,5 +1,13 @@
 # RIG - Arkkitehtuuridokumentti
 
+## Rakenne
+
+![Pakkauskaavio]https://raw.githubusercontent.com/vapsolon/ot-harjoitustyo/master/dokumentaatio/kuvat/Pakkauskaavio.png)
+
+**rig.rig** sisältää **Main**-luokan, jonka ainoa tehtävä on GUI-olion alustaminen ja käynnistäminen.
+**rig.ui** sisältää **GUI**-luokan, joka luo, asettelee ja lopulta näyttää käyttöliittymän. Luokka sisältää myös käyttöliittymäkomponenttien tapahtumakuuntelun.
+**rig.utils** sisältää apuluokkia jotka suorittavat ohjelman varsinaisen toiminnallisuuden. **ImageGenerator** luo satunnaiskuvia ja **Validator** tarkistaa käyttöliittymän saamien käyttäjäsyötteiden laillisuuden.
+
 ## Luokkakaavio
 
 ![Luokkakaavio](https://raw.githubusercontent.com/vapsolon/ot-harjoitustyo/master/dokumentaatio/kuvat/Luokkakaavio.png)

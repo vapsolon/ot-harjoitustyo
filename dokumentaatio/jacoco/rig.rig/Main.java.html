@@ -5,8 +5,8 @@ import rig.UI.GUI;
 
 /**
  * Main class for the program. &lt;br&gt;
- * Currently in charge of setting the actual image generator up and letting it
- * run. Will expand to set up and run the GUI class in the future.
+ * Only serves as a separate entrypoint that launches the user interface so the
+ * GUI class is at least a bit less cluttered.
  * @author vapsolon
  */
 public final class Main {
@@ -20,19 +20,12 @@ public final class Main {
     
     /**
      * The main function. &lt;br&gt;
-     * Simply initializes and calls the actual image generator with a hardcoded
-     * resolution for now.
+     * Simply just launches the application with the GUI class.
      * @param args Command line arguments
      */
     public static void main(String[] args){
-<span class="nc" id="L28">        Application.launch(GUI.class);</span>
-        /*ImageGenerator ig = new ImageGenerator(512, 512);
-        try {
-            ig.generate();
-        } catch (IOException ex) {
-            System.out.println(ex);
-        }*/
-<span class="nc" id="L35">    }</span>
+<span class="nc" id="L27">        Application.launch(GUI.class);</span>
+<span class="nc" id="L28">    }</span>
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

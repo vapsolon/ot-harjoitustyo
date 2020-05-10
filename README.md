@@ -24,6 +24,8 @@
 
 [Viikko 6](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Viikko6)
 
+**[Loppupalautus](https://github.com/vapsolon/ot-harjoitustyo/releases/tag/Loppupalautus)**
+
 ## Komentorivitoiminnot
 
 ### Testaus

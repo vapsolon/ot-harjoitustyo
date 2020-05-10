@@ -12,4 +12,7 @@ HUOM: Ensimmäiset kaksi päivämäärää ovat koko viikon tilastoja, tästä e
 | 21.4 | 5    | Kolmas generointimoodi |
 | 27.4 | 3    | Parannuksia projektin rakennukseen ja javafx:n käytöön |
 | 28.4 | 3    | Käyttäjäsyötteen validointi + testit, kakki maven-toiminnallisuudet vihdoin täyteen kuntoon |
-| yht  | 39   | | 
+| 5.5  | 4    | Tuki satunnaiselle läpinäkyvyydelle |
+| 7.5  | 7    | Kaksi uutta generointimoodia ja niiden sekä läpinäkyvyyden testit |
+| 10.5 | 3    | Loppupaketointi, testausdokumentti, dokumentaation yleinen siistiminen ja viimeistely |
+| yht  | 53   | | 

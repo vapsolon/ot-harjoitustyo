@@ -1,15 +1,14 @@
 # RIG - Määrittelydokumentti
 
 ## Yleiskuvaus
-Projektin tarkoituksena on toteuttaa Random Image Generator eli satunnaiskuvageneraattori, tuttavallisemmin RIG. Perustoiminnallisuutena on luoda tietyn kokoinen, luultavasti 256x256 tai 512x512 kuvatiedosto arpomalla jokaisen pikselin väriarvo, jolloin tuloksena on satunnainen sekasotku värikästä lumisadetta. Perustoiminnallisuuden valmistuttua toimintaa voidaan hioa ja erikoistaa, esimerkiksi tarjoamalla mahdollisuus käyttäjäsyötteeseen kuvan resoluution, käytettävien värien määrän ja väripaletin sekä mahdollisesti arvontasääntöjen osalta.
+Projektin tarkoituksena on toteuttaa Random Image Generator eli satunnaiskuvageneraattori, tuttavallisemmin RIG. Perustoiminnallisuutena on luoda tietyn kokoinen, oletuksena 512x512 kuvatiedosto arpomalla jokaisen pikselin väriarvo, jolloin tuloksena on satunnainen sekasotku värikästä lumisadetta. Käyttäjä voi itse valita kuvan resoluution, ja tavallisen täysin satunnaisen generaation lisäksi tarjolla on neljä vaihtoehtoista generaatiomoodia. Lisäksi käyttäjä voi valita arvotaanko myös kuvan läpinäkyvyysarvot satunnaisiksi.
 
-Kuvatiedosto olisi tarkoitus pystyä näyttämään sovelluksen käyttöliittymässä suoraan ja sen tallentamiseen tulisi olla mahdollisuus napin kautta, joten kuvaformaatti on alustavasti joko PNG, JPEG tai GIF. Jos yksikään näistä binääridataformaateista ei kuitenkaan jostain syystä toimi, PPM on kohtalainen fallback, joskin tällöin kuvan näyttämiseen käyttöliittymässä täytyisi keksiä jokin luova kiertotie.
+Kuvatiedostot tallennetaan väliaikaistiedostoon ja näytetään käyttöliittymässä. Halutessaan kuvan voi myös tallentaa levylle, jolloin ohjelma yksinkertaisesti kopioi jo tallennetun väliaikaistiedoston käyttäjän määrittelemään tiedostopolkuun. Ainoa tuettu kuvaformaatti on **PNG**.
 
 ## Toiminnallisuudet
-Vielä lyhyesti ja tiiviisti
+Seuraava lista sisältää kaikki loppupalautuksen tukemat toiminnallisuudet.
 
-* Satunnaiskuvan luominen ilman parametreja ✅
-* Käyttäjäsyöte ainakin kuvan resoluution(✅) ja värien määrän suhteen
-* Erilaiset generointisäännöt tai generointimoodit ohjaamaan satunnallisuutta
-  * Esimerkiksi "tietyn värinen pikseli voi elää vain itsestään korkeintaan +-10 väriarvon päässä olevan pikselin naapurina" tai "tiettyyn kohtaan arvottu pikseli kasvattaa ympärilleen viiden pikselin säteelle perheen"
-  * Tällä hetkellä toteutettu **Täysin satunnainen**, **Mustavalkoinen** ja **Variaatio aiemman pikselin perusteella**
+* Satunnaiskuvien luominen
+* Käyttäjäsyöte kuvan resoluution ja läpinäkyvyysarvonnan suhteen
+* Erilaiset generointimoodit
+* Mahdollisuus kuvien tallentamiseen haluttuun sijaintiin

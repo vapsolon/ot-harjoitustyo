@@ -23,7 +23,7 @@ Ennen kuvan generoinnin aloittamista **GUI** tarkistaa vielä käyttäjäsyötte
 ## Toiminnallisuudet
 
 #### Satunnaiskuvan generointi
-Oletetaan alkutilanteeksi oletussyöte, eli kuvan kooksi **512x512**, generaatiomoodiksi **Regular** ja variaatioksi **5**
+Oletetaan alkutilanteeksi oletussyöte, eli kuvan kooksi **512x512**, generaatiomoodiksi **Regular**, variaatioksi **5** ja **Alpha**-laatikko ruksaamattomaksi
 
 ![Sekvenssikaavio](https://raw.githubusercontent.com/vapsolon/ot-harjoitustyo/master/dokumentaatio/kuvat/Sekvenssikaavio.png)
 

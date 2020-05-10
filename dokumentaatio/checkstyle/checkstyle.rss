@@ -26,7 +26,7 @@ under the License.
     <copyright>&#169;2020</copyright>
     <item>
       <title>File: 2,
-             Errors: 4,
+             Errors: 7,
              Warnings: 0,
              Infos: 0
       </title>
@@ -46,7 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="${project.url}/checkstyle.html#rig.Utils.Validator.java">rig/Utils/Validator.java</a>
+                  <a href="${project.url}/checkstyle.html#rig.rig.Main.java">rig/rig/Main.java</a>
                 </td>
                 <td>
                   0
@@ -69,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  4
+                  7
                 </td>
               </tr>
                       </tbody>

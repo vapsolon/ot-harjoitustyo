@@ -11,18 +11,21 @@ import java.util.zip.DeflaterOutputStream;
 
 /**
  * Generates and writes a PNG image to disk. <br>
- * Contains most of the logic for generating PNG image data. Support for
- * generation modes other than full colour scale RNG is slowly being built.
+ * Contains most of the logic for generating PNG image data. Supports a couple
+ * different generation modes as well.
  * @author vapsolon
  */
 public class ImageGenerator {
 
     private final int width;
     private final int height;
-    //Generation mode, so far 0=regular, 1=black&white, 2=+-
+    //Generation mode, so far 0=regular, 1=black&white, 2=+-, 3=strong colours,
+    //4=eliminate the weak
     private final int mode;
     //The amount of increase/decrease per pixel for generation mode 2
     private final int variation;
+    //Whether alpha values are randomly generated too
+    private final boolean alpha;
     
     //Have the streams and other utilities available for the whole class
     private BufferedOutputStream file;
@@ -31,11 +34,12 @@ public class ImageGenerator {
     private CRC32 crc;
     private Random rand;
     
-    //Store the latest RGB data so some specialized generation methods can use
+    //Store the latest RGBA data so some specialized generation methods can use
     //them
     private int lr = -1;
     private int lg = -1;
     private int lb = -1;
+    private int la = -1;
     
     //Some frequently-used magic numbers go here so checkstyle stops complaining
     //without having to make an exception for the entire magic number rule
@@ -45,26 +49,30 @@ public class ImageGenerator {
     
     /**
      * Public constructor for the class. <br>
-     * Takes the width and the height of the image and the image generation mode
-     * as arguments and initializes all the required streams and the
-     * CRC-calculator in preparation for actual use.
+     * Takes the width and the height of the image, the image generation mode
+     * and the alpha flag as arguments and initializes all the required streams 
+     * and the CRC-calculator in preparation for actual use.
      * @param w Width of the image to be generated
      * @param h Height of the image to be generated
      * @param m Image generation mode
      * @param v Amount of variation for generation mode 2
+     * @param a Whether alpha values are randomly generated or not
      */
-    public ImageGenerator(int w, int h, int m, int v){
+    public ImageGenerator(int w, int h, int m, int v, boolean a){
+        //Store any data that was passed and initialize Random
         this.width = w;
         this.height = h;
         this.rand = new Random();
         this.mode = m;
         this.variation = v;
+        this.alpha = a;
         //Prepare all the required streams ahead of writing
         try{
             String tempDir = System.getProperty("java.io.tmpdir");
             file = new BufferedOutputStream(new FileOutputStream(tempDir
                     + File.separator + "RIG.png"));
             buffer = new ByteArrayOutputStream();
+            //More circumventing Checkstyle's Magic Number Checker
             final int def = 9;
             compress = new DeflaterOutputStream(buffer, new Deflater(def));
             crc = new CRC32();
@@ -105,7 +113,7 @@ public class ImageGenerator {
     /**
      * Returns the CRC calculator's current value. <br>
      * Currently purely for testing purposes. The simplest way so far to test
-     * the functionality of this class is writing data and comparing this
+     * the writers of this class is writing data and comparing this
      * generated CRC value to a pre-calculated one to see if the data was
      * written correctly.
      * @return The current CRC value
@@ -189,7 +197,7 @@ public class ImageGenerator {
                 compress.write(pixel[0]); //RED
                 compress.write(pixel[1]); //GREEN
                 compress.write(pixel[2]); //BLUE
-                compress.write(white); //ALPHA
+                compress.write(pixel[3]); //ALPHA
             }
         }
         //The image data has been generated, close the compressor
@@ -219,19 +227,25 @@ public class ImageGenerator {
      * With more methods of generation being supported, pixel generation itself
      * now gets its own function. Checks the generation mode the generator has
      * been given and generates pixels with the correct colour values/range.
-     * @return int[] containing 3 values matching the R, G and B data of a
+     * @return int[] containing 4 values matching the R, G, B and A data of a
      * single pixel
      */
     public int[] genPixel(){
         //Check generation mode and generate pixels based on it
+        //Mode is Black&White
         if(this.mode == 1){
+            //Generate alpha value first if needed
+            int alphaVal = white;
+            if(this.alpha){
+                alphaVal = rand.nextInt(limit-1);
+            }
             //If 0, pixel is black, if 1 white
             if(rand.nextInt(2) == 0){
-                int[] res = {black, black, black};
+                int[] res = {black, black, black, alphaVal};
                 return res;
             }
             else{
-                int[] res = {white, white, white};
+                int[] res = {white, white, white, alphaVal};
                 return res;
             }
         }
@@ -242,32 +256,107 @@ public class ImageGenerator {
                 lr = rand.nextInt(limit);
                 lg = rand.nextInt(limit);
                 lb = rand.nextInt(limit);
-                int[] res = {lr, lg, lb};
+                if(this.alpha){
+                    la = rand.nextInt(limit);
+                }
+                else{
+                    la = white;
+                }
+                int[] res = {lr, lg, lb, la};
                 return res;
             }
             //At least one pixel has been generated and we can use a
             //reference point
             else{
                 //If 0, reduce the value of all colours
+                //For simplicity looping is not allowed, so a 0-value will be
+                //kept at 0 instead of rolling to 251
                 if(rand.nextInt(2) == 0){
                     lr -= variation;
                     lg -= variation;
                     lb -= variation;
+                    if(this.alpha){
+                        la -= variation;
+                    }
                 }
                 //Otherwise increase the values
                 else{
                     lr += variation;
                     lg += variation;
                     lb += variation;
+                    if(this.alpha){
+                        la += variation;
+                    }
                 }
-                int[] res = {lr, lg, lb};
+                int[] res = {lr, lg, lb, la};
                 return res;
             }
         }
+        //Strong colours mode
+        else if(this.mode == 3){
+            //Set the initial states of all values to be 0 and fully opaque
+            int strr = black;
+            int strg = black;
+            int strb = black;
+            int stra = white;
+            //Then if the randomizer rolls a 0 allow that colour to be drawn
+            if(rand.nextInt(2) == 0){
+                strr = white;
+            }
+            if(rand.nextInt(2) == 0){
+                strg = white;
+            }
+            if(rand.nextInt(2) == 0){
+                strb = white;
+            }
+            //If alpha is active randomize the value
+            if(this.alpha){
+                stra = rand.nextInt(limit);
+            }
+            int[] res = {strr, strg, strb, stra};
+            return res;
+        }
+        //Weak elimination mode
+        else if(this.mode == 4){
+            //Set the initial states of all values to be 0 and fully opaque
+            int strr = black;
+            int strg = black;
+            int strb = black;
+            int stra = white;
+            //If alpha is active set it to full transparency by default
+            if(alpha){
+                stra = black;
+            }
+            //Generate values into a ready-made array
+            int[] values = {rand.nextInt(limit), rand.nextInt(limit),
+                rand.nextInt(limit)};
+            //If value is strong, allow it to be kept and also turn the pixel
+            //opaque
+            if(values[0] == white){
+                strr = white;
+                stra = white;
+            }
+            if(values[1] == white){
+                strg = white;
+                stra = white;
+            }
+            if(values[2] == white){
+                strb = white;
+                stra = white;
+            }
+            int[] res = {strr, strg, strb, stra};
+            return res;
+        }
         //If mode is 0, generate a regular random pixel
         else{
+            //Generate alpha value first if needed
+            int alphaVal = white;
+            if(this.alpha){
+                alphaVal = rand.nextInt(limit-1);
+            }
+            //Generate array of colour data, all completely random
             int[] res = {rand.nextInt(limit), rand.nextInt(limit),
-                rand.nextInt(limit)};
+                rand.nextInt(limit), alphaVal};
             return res;
         }
     }

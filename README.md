@@ -6,6 +6,8 @@
 
 [Arkkitehtuuridokumentti](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Arkkitehtuuri.md)
 
+[Testausdokumentti](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Testausdokumentti.md)
+
 [Käyttöohje](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Käyttöohje.md)
 
 [Työaikakirjanpito](https://github.com/vapsolon/ot-harjoitustyo/blob/master/dokumentaatio/Työaikakirjanpito.md)
